@@ -24,7 +24,7 @@ namespace OnSale.Web.Data
             await _context.Database.EnsureCreatedAsync();
             await CheckCountriesAsync();
             await CheckRolesAsync();
-            await CheckUserAsync("1010", "hilder", "montoya", "hilderbrand2016@hotmail.com", "3005337420", "Calle Luna Calle Sol", UserType.Admin);
+            await CheckUserAsync("1010", "hilder", "montoya", "hilderbrand2007@hotmail.com", "3005337420", "Calle Luna Calle Sol", UserType.Admin);
 
         }
         private async Task CheckRolesAsync()
