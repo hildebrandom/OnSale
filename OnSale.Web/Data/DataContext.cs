@@ -22,6 +22,10 @@ namespace OnSale.Web.Data
         public DbSet<Country> Countries { get; set; }
 
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
