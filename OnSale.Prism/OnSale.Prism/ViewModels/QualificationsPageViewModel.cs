@@ -1,12 +1,12 @@
-﻿using OnSale.Common.Responses;
+﻿using OnSale.Common.Helpers;
+using OnSale.Common.Responses;
 using OnSale.Prism.Helpers;
 using OnSale.Prism.ItemViewModels;
+using OnSale.Prism.Views;
+using Prism.Commands;
 using Prism.Navigation;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace OnSale.Prism.ViewModels
 {
@@ -16,6 +16,7 @@ namespace OnSale.Prism.ViewModels
         private ProductResponse _product;
         private bool _isRunning;
         private ObservableCollection<QualificationItemViewModel> _qualifications;
+        private DelegateCommand _addQualificationCommand;
 
         public QualificationsPageViewModel(INavigationService navigationService)
             : base(navigationService)
@@ -23,6 +24,9 @@ namespace OnSale.Prism.ViewModels
             _navigationService = navigationService;
             Title = Languages.Qualifications;
         }
+
+        public DelegateCommand AddQualificationCommand => _addQualificationCommand ?? (_addQualificationCommand = new DelegateCommand(AddQualificationAsync));
+
 
         public bool IsRunning
         {
@@ -36,30 +40,62 @@ namespace OnSale.Prism.ViewModels
             set => SetProperty(ref _qualifications, value);
         }
 
+        public override void OnNavigatedFrom(INavigationParameters parameters)
+        {
+            base.OnNavigatedFrom(parameters);
+
+            if (parameters.ContainsKey("product"))
+            {
+                LoadProduct(parameters);
+            }
+        }
+
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
 
             if (parameters.ContainsKey("product"))
             {
-                IsRunning = true;
-                _product = parameters.GetValue<ProductResponse>("product");
-                if (_product.Qualifications != null)
-                {
-                    Qualifications = new ObservableCollection<QualificationItemViewModel>(
-                        _product.Qualifications.Select(q => new QualificationItemViewModel(_navigationService)
-                        {
-                            Date = q.Date,
-                            Id = q.Id,
-                            Remarks = q.Remarks,
-                            Score = q.Score
-                        })
-                        .OrderByDescending(q => q.Date)
-                        .ToList());
-                }
-
-                IsRunning = false;
+                LoadProduct(parameters);
             }
+        }
+
+        private void LoadProduct(INavigationParameters parameters)
+        {
+            IsRunning = true;
+            _product = parameters.GetValue<ProductResponse>("product");
+            if (_product.Qualifications != null)
+            {
+                Qualifications = new ObservableCollection<QualificationItemViewModel>(
+                    _product.Qualifications.Select(q => new QualificationItemViewModel(_navigationService)
+                    {
+                        Date = q.Date,
+                        Id = q.Id,
+                        Remarks = q.Remarks,
+                        Score = q.Score
+                    })
+                    .OrderByDescending(q => q.Date)
+                    .ToList());
+            }
+
+            IsRunning = false;
+        }
+        private async void AddQualificationAsync()
+        {
+            if (!Settings.IsLogin)
+            {
+                await _navigationService.NavigateAsync(nameof(AddQualificationPage));
+            }
+            else
+            {
+                await App.Current.MainPage.DisplayAlert(Languages.Error, Languages.LoginFirstMessage, Languages.Accept);
+                NavigationParameters parameters = new NavigationParameters
+                {
+                    { "pageReturn", nameof(AddQualificationPage) }
+                };
+
+                await _navigationService.NavigateAsync($"/{nameof(OnSaleMasterDetailPage)}/NavigationPage/{nameof(LoginPage)}", parameters);
+            }            
         }
     }
 }
