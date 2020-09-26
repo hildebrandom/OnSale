@@ -8,6 +8,7 @@ using Xamarin.Forms;
 using OnSale.Common.Services;
 using System;
 using Syncfusion.Licensing;
+using OnSale.Prism.Helpers;
 
 namespace OnSale.Prism
 {
@@ -29,7 +30,10 @@ namespace OnSale.Prism
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<IAppInfo, AppInfoImplementation>();
+
             containerRegistry.Register<IApiService, ApiService>();
+            containerRegistry.Register<IRegexHelper, RegexHelper>();
+
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<ProductsPage, ProductsPageViewModel>();
             containerRegistry.RegisterForNavigation<ProductDetailPage, ProductDetailPageViewModel>();
@@ -42,6 +46,8 @@ namespace OnSale.Prism
             containerRegistry.RegisterForNavigation<QualificationDetailPage, QualificationDetailPageViewModel>();
             containerRegistry.RegisterForNavigation<ProductTabbedPage, ProductTabbedPageViewModel>();
             containerRegistry.RegisterForNavigation<AddQualificationPage, AddQualificationPageViewModel>();
+            containerRegistry.RegisterForNavigation<RegisterPage, RegisterPageViewModel>();
+
         }
     }
 }

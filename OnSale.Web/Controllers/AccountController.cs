@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnSale.Common.Entities;
 using OnSale.Common.Enums;
+using OnSale.Common.Request;
 using OnSale.Common.Responses;
 using OnSale.Web.Data;
 using OnSale.Web.Data.Entities;
@@ -11,6 +13,7 @@ using OnSale.Web.Helpers;
 using OnSale.Web.Models;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace OnSale.Web.Controllers
@@ -423,6 +426,58 @@ namespace OnSale.Web.Controllers
             return View(model);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPut]
+        public async Task<IActionResult> PutUser([FromBody] UserRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            string email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            User user = await _userHelper.GetUserAsync(email);
+            if (user == null)
+            {
+                return NotFound("Error001");
+            }
+
+            City city = await _context.Cities.FindAsync(request.CityId);
+            if (city == null)
+            {
+                return BadRequest(new Response
+                {
+                    IsSuccess = false,
+                    Message = "Error004"
+                });
+            }
+
+            Guid imageId = user.ImageId;
+
+            if (request.ImageArray != null)
+            {
+                imageId = await _blobHelper.UploadBlobAsync(request.ImageArray, "users");
+            }
+
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.Address = request.Address;
+            user.PhoneNumber = request.Phone;
+            //TODO: Fix the document on the videos
+            user.Document = request.Document;
+            user.City = city;
+            user.ImageId = imageId;
+            
+
+            IdentityResult respose = await _userHelper.UpdateUserAsync(user);
+            if (!respose.Succeeded)
+            {
+                return BadRequest(respose.Errors.FirstOrDefault().Description);
+            }
+
+            User updatedUser = await _userHelper.GetUserAsync(email);
+            return Ok(updatedUser);
+        }
     }
 }
 
