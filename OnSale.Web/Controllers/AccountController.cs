@@ -364,7 +364,7 @@ namespace OnSale.Web.Controllers
 
             return View();
         }
-        public IActionResult RecoverPassword()
+        public IActionResult RecoverPasswordMVC()
         {
             return View();
         }
