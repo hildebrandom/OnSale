@@ -17,7 +17,6 @@ namespace OnSale.Web.Data
 
         public DbSet<ProductImage> ProductImages { get; set; }
 
-
         public DbSet<City> Cities { get; set; }
         public DbSet<Country> Countries { get; set; }
 
@@ -25,6 +24,8 @@ namespace OnSale.Web.Data
         public DbSet<Order> Orders { get; set; }
 
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<Qualification> Qualifications { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
