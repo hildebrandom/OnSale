@@ -195,6 +195,7 @@ namespace OnSale.Web.Controllers
                 .Include(c => c.Category)
                 .Include(c => c.ProductImages)
                  .Include(p => p.Qualifications)
+                 .ThenInclude(q => q.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
