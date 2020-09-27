@@ -7,9 +7,6 @@ using OnSale.Prism.Helpers;
 using OnSale.Prism.Views;
 using Prism.Commands;
 using Prism.Navigation;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xamarin.Essentials;
 
 namespace OnSale.Prism.ViewModels
@@ -25,7 +22,7 @@ namespace OnSale.Prism.ViewModels
         private DelegateCommand _loginCommand;
         private DelegateCommand _registerCommand;
         private DelegateCommand _forgotPasswordCommand;
-        
+
 
         public LoginPageViewModel(INavigationService navigationService, IApiService apiService) : base(navigationService)
         {
@@ -75,13 +72,13 @@ namespace OnSale.Prism.ViewModels
         {
             if (string.IsNullOrEmpty(Email))
             {
-                await App.Current.MainPage.DisplayAlert(Languages.Error, Languages.EmailError,Languages.Accept);
+                await App.Current.MainPage.DisplayAlert(Languages.Error, Languages.EmailError, Languages.Accept);
                 return;
             }
 
             if (string.IsNullOrEmpty(Password))
             {
-                await App.Current.MainPage.DisplayAlert(Languages.Error, Languages.PasswordError,Languages.Accept);
+                await App.Current.MainPage.DisplayAlert(Languages.Error, Languages.PasswordError, Languages.Accept);
                 return;
             }
             IsRunning = true;
@@ -132,9 +129,13 @@ namespace OnSale.Prism.ViewModels
 
         }
 
-        private void ForgotPasswordAsync()
+        private async void ForgotPasswordAsync()
         {
-            //TODO: Pending
+            NavigationParameters parameters = new NavigationParameters
+            {
+                { "email", Email }
+            };
+            await _navigationService.NavigateAsync(nameof(RecoverPasswordPage), parameters);
         }
 
         private async void RegisterAsync()

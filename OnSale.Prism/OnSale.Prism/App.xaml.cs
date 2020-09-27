@@ -9,6 +9,7 @@ using OnSale.Common.Services;
 using System;
 using Syncfusion.Licensing;
 using OnSale.Prism.Helpers;
+using OnSale.Common.Helpers;
 
 namespace OnSale.Prism
 {
@@ -33,6 +34,7 @@ namespace OnSale.Prism
 
             containerRegistry.Register<IApiService, ApiService>();
             containerRegistry.Register<IRegexHelper, RegexHelper>();
+            containerRegistry.Register<IFilesHelper, FilesHelper>();
 
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<ProductsPage, ProductsPageViewModel>();
@@ -47,6 +49,7 @@ namespace OnSale.Prism
             containerRegistry.RegisterForNavigation<ProductTabbedPage, ProductTabbedPageViewModel>();
             containerRegistry.RegisterForNavigation<AddQualificationPage, AddQualificationPageViewModel>();
             containerRegistry.RegisterForNavigation<RegisterPage, RegisterPageViewModel>();
+            containerRegistry.RegisterForNavigation<RecoverPasswordPage, RecoverPasswordPageViewModel>();
 
         }
     }
