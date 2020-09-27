@@ -170,7 +170,9 @@ namespace OnSale.Prism.Helpers
 
         public static string RecoverPasswordMessage => Resource.RecoverPasswordMessage;
 
+        public static string ChangePassword => Resource.ChangePassword;
 
+        public static string ChangeUserMessage => Resource.ChangeUserMessage;
 
     }
 }
